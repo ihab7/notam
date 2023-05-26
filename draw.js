@@ -6,6 +6,7 @@ var addPointBtn = document.getElementById("addPointBtn");
 var extraPoints = document.getElementById("extraPoints");
 var submitBtn = document.getElementById("submitBtn");
 var addedShapes = [];
+
 circleSelect.addEventListener("change", function () {
   if (circleSelect.checked) {
     circleInputs.style.display = "block";
@@ -35,6 +36,8 @@ addPointBtn.addEventListener("click", function () {
     pointInput.remove();
   });
 });
+
+//get poly data
 const handlePoly = () => {
   const inputs = Array.from(polygonInputs.querySelectorAll("input"));
   let polyArray = [];
@@ -47,6 +50,7 @@ const handlePoly = () => {
 
   return polyArray;
 };
+//get circle data
 const handleCircle = () => {
   const inputs = Array.from(circleInputs.querySelectorAll("input"));
   let centerInput = inputs[1].value;
@@ -57,6 +61,23 @@ const handleCircle = () => {
     radius: eval(radiusInput),
   };
 };
+const addCircle = (circle) => {
+  fetch(`http://localhost:5000/addCircle`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: {
+      center: circle.center,
+      radius: circle.radius,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data))
+    .catch((error) => {
+      console.error(error);
+    });
+};
 
 // const point = [
 //   [36.3219, 08.2826],
@@ -64,6 +85,7 @@ const handleCircle = () => {
 //   [36.381, 09.0517],
 //   [36.02, 08.4735],
 // ];
+
 var polygon = function (point) {
   L.polygon(point).addTo(previewCarte);
 };
@@ -95,11 +117,12 @@ submitBtn.addEventListener("click", (e) => {
 
     //addedShapes.push(newPolygone);
   } else {
-    var newCircle = circle(handleCircle().center, {
+    var newCircle = {
+      center: handleCircle().center,
       radius: handleCircle().radius,
-    });
-
-    // addedShapes.push(newCircle);
+    };
+    console.log(newCircle);
+    addCircle(newCircle);
   }
   carte.eachLayer(function (layer) {
     if (layer instanceof L.Circle || layer instanceof L.Polygon) {

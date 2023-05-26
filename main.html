@@ -12,6 +12,13 @@
     <!-- Favicons -->
     <link href="assets/img/favicon.png" rel="icon" />
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <!-- leaflet draw -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
     <!-- Bootstrap -->
     <link
       rel="stylesheet"
@@ -75,7 +82,7 @@
           <i class="bi bi-list mobile-nav-toggle"></i>
         </nav>
         <!-- .navbar -->
-        <a class="check-notams scrollto" href="#check-notams">Check notams</a>
+        <a class="check-notams scrollto" href="#check-notams">Logout</a>
       </div>
     </header>
     <!-- End Header -->
@@ -141,6 +148,7 @@
               >
                 Close
               </button>
+              <!-- <button class="print-map">print map</button> -->
               <button type="button" class="btn btn-primary">
                 Save changes
               </button>
@@ -183,19 +191,28 @@
                   Preview Shapes
                 </button>
               </div>
+              <div class="row w-50">
+                <button
+                  type="button"
+                  class="btn btn-info col col-md-6"
+                  data-toggle="modal"
+                  data-target="#searchNotams"
+                  id="getTrigger"
+                >
+                  Search Notams
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-warning col col-md-6"
+                  data-toggle="modal"
+                  data-target="#updateNotams"
+                >
+                  Update Notams
+                </button>
+              </div>
             </center>
           </div>
         </div>
-
-        <!-- <div class="col col-lg-12 macarte">
-            <div id="macarte"></div>
-          </div> -->
-
-        <!-- <div class="col-lg-4">
-          <a href="https://metar-taf.com/DTTA" id="metartaf-Oc2gALYS" style="font-size:18px; font-weight:500; color:#000; width:300px; height:435px; display:block">METAR Tunis Carthage International Airport</a>
-          <script async defer crossorigin="anonymous" src="https://metar-taf.com/embed-js/DTTA?u=35477&target=Oc2gALYS"></script>
-        </div> -->
-        <!-- </div> -->
 
         <!-- Add notam Modal -->
         <div
@@ -246,56 +263,13 @@
 
                       <div class="form-group">
                         <label for="q">Champs Q:</label>
-                        <div class="input-group mb-3">
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="q1"
-                            name="q1"
-                          />-
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="q2"
-                            name="q2"
-                          />-
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="q3"
-                            name="q3"
-                          />-
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="q4"
-                            name="q4"
-                          />-
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="q5"
-                            name="q5"
-                          />-
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="q6"
-                            name="q6"
-                          />-
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="q7"
-                            name="q7"
-                          />-
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="q8"
-                            name="q8"
-                          />
-                        </div>
+
+                        <input
+                          class="form-control"
+                          id="champs_q"
+                          name="champs_q"
+                          type="text"
+                        />
                       </div>
 
                       <div class="form-group">
@@ -392,6 +366,106 @@
             </div>
           </div>
         </div>
+        <style>
+          .checkbox {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+          }
+
+          .checkbox input[type="checkbox"] {
+            position: absolute;
+            top: 0;
+            left: 0; /* Change 'right' to 'left' */
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+          }
+
+          .checkbox span {
+            position: absolute;
+            top: 50%;
+            right: 0; /* Change 'left' to 'right' */
+            transform: translate(
+              50%,
+              -50%
+            ); /* Change 'translate(-50%, -50%)' to 'translate(50%, -50%)' */
+            width: 16px;
+            height: 16px;
+            border: 2px solid #000;
+          }
+
+          .checkbox input[type="checkbox"]:checked + span::before {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            /* mouse hover style */
+          }
+        </style>
+        <!-- Search Notams Modal -->
+        <div
+          class="modal fade"
+          id="searchNotams"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="searchNotamsLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="searchNotamsLabel">
+                  Search Notams
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body bg-light">
+                <div class="col col-lg-12">
+                  <div class="form-group">
+                    <label for="notamsCode">Notams Code</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="notamsCode"
+                      placeholder="Enter Here"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      id="searchButton"
+                    >
+                      Search
+                    </button>
+                  </div>
+                  <div id="notamsTable"></div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteButton">
+                  Delete
+                </button>
+                <button type="button" class="btn btn-primary">
+                  Draw NOTAM
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Preview Shape modal  -->
         <div
           class="modal fade"
@@ -524,8 +598,10 @@
             <div class="col-lg-3 col-md-6 footer-info">
               <img src="assets/img/logo.png" alt="notam" />
               <p>
-                In alias aperiam. Placeat tempore facere. Officiis voluptate
-                ipsam vel eveniet est dolor et totam porro. .
+                En regroupant les NOTAMs en un seul endroit et en les présentant
+                de manière claire et concise, l'application NOTAM permet aux
+                utilisateurs d'accéder rapidement aux informations pertinentes
+                pour assurer la sécurité et la conformité lors des vols.
               </p>
             </div>
 
@@ -596,13 +672,41 @@
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
     <!-- fichiers javascript -->
-    <script
+    <!-- <script
       src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
       integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
       crossorigin=""
+    ></script> -->
+
+    <!-- google-mutant -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"
+      async
+      defer
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet-src.js"
+      integrity="sha512-I5Hd7FcJ9rZkH7uD01G3AjsuzFy3gqz7HIJvzFZGFt2mrCS4Piw9bYZvCgUE0aiJuiZFYIJIwpbNnDIM6ohTrg=="
+      crossorigin=""
+    ></script>
+    <!-- leaflet draw -->
+    <!-- Include Leaflet Draw CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"
+    />
+
+    <!-- Include Leaflet Draw JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
     <!-- import layer -->
     <script src="firtunis.js"></script>
+    <script src="lib/leaflet.browser.print.min.js"></script>
 
     <script>
       // liste des aéroports
@@ -634,13 +738,163 @@
       };
 
       // on initialise la carte
+
       var previewCarte = L.map("previewCarte").setView([36.853, 10.2116], 6);
+
       var carte = L.map("macarte").setView([36.853, 10.2116], 6);
-      // on initialise les tiles
+
+      //print map
+      $(".print-map").click(function () {
+        window.print();
+      });
+
+      var browserControl = L.control.browserPrint().addTo(carte);
+
+      var drawnItems = new L.FeatureGroup();
+      previewCarte.addLayer(drawnItems);
+
+      var drawControl = new L.Control.Draw({
+        draw: {
+          polygon: {
+            shapeOptions: {
+              color: "purple",
+            },
+            allowIntersection: false,
+            drawError: {
+              color: "orange",
+              timeout: 1000,
+            },
+          },
+          polyline: {
+            shapeOptions: {
+              color: "red",
+            },
+          },
+          rect: {
+            shapeOptions: {
+              color: "green",
+            },
+          },
+          circle: {
+            shapeOptions: {
+              color: "steelblue",
+            },
+          },
+        },
+        edit: {
+          featureGroup: drawnItems,
+        },
+      });
+
+      previewCarte.addControl(drawControl);
+
+      previewCarte.on("draw:created", function (e) {
+        var layer = e.layer;
+
+        // Prompt the user to choose a color for the shape
+        var shapeColor = prompt(
+          "Choose a color for the shape (e.g., red, #ff0000):"
+        );
+        if (shapeColor) {
+          // Set the chosen color as the shape's color
+          layer.setStyle({
+            color: shapeColor,
+          });
+        }
+
+        // Generate the popup content based on the layer type
+        var popupContent = getPopupContent(layer);
+
+        // Bind the popup to the layer
+        layer.bindPopup(popupContent);
+
+        // Add the layer to the feature group
+        drawnItems.addLayer(layer);
+      });
+
+      // Helper method to generate the popup content based on the layer type
+      function getPopupContent(layer) {
+        var type = layerType(layer);
+        var content = "<p><strong>Shape Type: " + type + "</strong></p>";
+
+        // Additional details based on the layer type
+        if (type === "Polygon") {
+          content += "<p>Area: " + calculateArea(layer) + "</p>";
+
+          var coordinates = layer.getLatLngs()[0];
+          content += "<p>Coordinates:</p>";
+          for (var i = 0; i < coordinates.length; i++) {
+            content +=
+              "<p>" +
+              (i + 1) +
+              ". Lat: " +
+              coordinates[i].lat +
+              ", Lng: " +
+              coordinates[i].lng +
+              "</p>";
+          }
+        } else if (type === "Polyline") {
+          content += "<p>Distance: " + calculateDistance(layer) + "</p>";
+        } else if (type === "Rectangle") {
+          content += "<p>Area: " + calculateArea(layer) + "</p>";
+        } else if (type === "Circle") {
+          content += "<p>Center: " + layer.getLatLng().toString() + "</p>";
+          content += "<p>Radius: " + layer.getRadius() + "</p>";
+        }
+
+        return content;
+      }
+
+      // Helper method to calculate the area of a polygon or rectangle
+      function calculateArea(layer) {
+        // Use a library or custom code to calculate the area
+        // Return the calculated area value
+      }
+
+      // Helper method to calculate the distance of a polyline
+      function calculateDistance(layer) {
+        // Use a library or custom code to calculate the distance
+        // Return the calculated distance value
+      }
+
+      // Helper method to determine the layer type
+      function layerType(layer) {
+        if (layer instanceof L.Polygon) {
+          return "Polygon";
+        } else if (layer instanceof L.Polyline) {
+          return "Polyline";
+        } else if (layer instanceof L.Rectangle) {
+          return "Rectangle";
+        } else if (layer instanceof L.Circle) {
+          return "Circle";
+        }
+
+        return "Unknown";
+      }
+      var coordinateControl = L.control({ position: "topright" }); // Create a new control and position it at the top right corner
+
+      coordinateControl.onAdd = function (map) {
+        this._div = L.DomUtil.create("div", "coordinate-control"); // Create a div element with a class
+        return this._div;
+      };
+
+      coordinateControl.update = function (latlng) {
+        this._div.innerHTML =
+          "Latitude: " +
+          latlng.lat.toFixed(6) +
+          "<br>Longitude: " +
+          latlng.lng.toFixed(6); // Update the content of the control with rounded coordinates
+      };
+
+      coordinateControl.addTo(previewCarte); // Add the control to the map
+
+      previewCarte.on("mousemove", function (e) {
+        coordinateControl.update(e.latlng);
+      });
+
       var osmPreview = L.tileLayer(
         "https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
         {
-          // Il est toujours bien de laisser le lien vers la source des données
           attribution:
             'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
           minZoom: 6,
@@ -650,13 +904,13 @@
       var osm = L.tileLayer(
         "https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
         {
-          // Il est toujours bien de laisser le lien vers la source des données
           attribution:
             'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
           minZoom: 6,
           maxZoom: 15,
         }
       ).addTo(carte);
+
       // dark map
       var dark = L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
@@ -789,14 +1043,6 @@
       }
       var tableauMarqueurs = [];
 
-      // ajouter un circle
-      var circle = L.circle([37.2442, 9.777745], {
-        color: "red",
-        fillColor: "#f03",
-        fillOpacity: 0.5,
-        radius: 5000,
-      }).addTo(carte);
-
       //     var polygon = L.polygon(points, {
       //     color: 'black',
       //     opacity: 0.8,
@@ -807,11 +1053,9 @@
 
       // var content = '<b>NOTAM N°</b><br>' + x1 + '<br><br><button class="butt" onclick="removePolygon();">supprimer la zone</button><br>';
       // var popup = L.popup().setContent(content);
-
       // polygon.bindPopup(popup);
-
       // function removePolygon() {
-      //     map.removeLayer(polygon);
+      //   map.removeLayer(polygon);
       // }
       // var polygon = L.polygon([[36.3219, 08.2826],
       //    [36.3810, 08.4034],
@@ -832,22 +1076,16 @@
       // ]).addTo(carte);
 
       //  Map click
-      // var popup = L.popup();
+      var popup = L.popup();
 
-      // function onMapClick(e) {
-      //   popup
-      //     .setLatLng(e.latlng)
-      //     .setContent("You clicked the map at " + e.latlng.toString())
-      //     .openOn(carte);
-      // }
+      function onMapClick(e) {
+        popup
+          .setLatLng(e.latlng)
+          .setContent("You clicked the map at " + e.latlng.toString())
+          .openOn(carte);
+      }
 
-      // carte.on("click", onMapClick);
-
-      // ajouter un popup
-      circle.bindPopup(
-        "A2228/22 NOTAMR A1775/22 Q) DTTC/QNLAS/IV/BO/A/000/999/3656N01015E005 A) DTTA B) 2212081200 C) 2303081200 EST E) L TS 325 KHZ U/S.."
-      );
-      //polygon.bindPopup("'A0099/22 NOTAMR A1121/20', 'DTTC/QRALW/IV/NBO/W/100/270/3619N00846E024', 'DTTC', '1801271143', '1805012359', 'H24', 'AIRSPACE RESERVATION FOR MIL ACT WILL TAKE PLACE : 363219N 0082826E 363810N 0084034E 363810N 0090517E 361324N 0090517E 360200N 0084735E 360002N 0083110E 362712N 0083110E THESE ACT MUST BE COORDINATED WITH CONCERNED ATC UNITS', '10000FT MSL', '27000FT MSL')");
+      carte.on("click", onMapClick);
 
       // // // ajouter layer
       var myStyle = function (feature) {
